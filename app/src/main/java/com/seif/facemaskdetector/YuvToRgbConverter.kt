@@ -75,7 +75,7 @@ class YuvToRgbConverter(context: Context) {
                     outputStride = 2
                     outputOffset = pixelCount
                 }
-                else ->{
+                else -> {
                     return@forEachIndexed
                 }
 
@@ -83,38 +83,35 @@ class YuvToRgbConverter(context: Context) {
             val planeBuffer = plane.buffer
             val rowStride = plane.rowStride
             val pixelStride = plane.pixelStride
-            val planeCrop = if(planeIndex ==0){
+            val planeCrop = if (planeIndex == 0) {
                 imageCrop
-            }
-            else{
+            } else {
                 Rect(
-                    imageCrop.left/2,
-                    imageCrop.top/2,
-                    imageCrop.right/2,
-                    imageCrop.bottom/2
+                    imageCrop.left / 2,
+                    imageCrop.top / 2,
+                    imageCrop.right / 2,
+                    imageCrop.bottom / 2
                 )
             }
-             val planeWidth = planeCrop.width()
+            val planeWidth = planeCrop.width()
             val planeHeight = planeCrop.height()
             val rowBuffer = ByteArray(plane.rowStride)
-            val rowLength = if (pixelStride ==1 && outputStride == 1){
+            val rowLength = if (pixelStride == 1 && outputStride == 1) {
                 planeWidth
+            } else {
+                (planeWidth - 1) * pixelStride + 1
             }
-            else{
-                (planeWidth-1)*pixelStride+1
+            for (row in 0 until planeHeight) {
+                (row + planeCrop.top) * rowStride + planeCrop.left * pixelStride
             }
-            for (row in 0 until planeHeight){
-                (row + planeCrop.top)*rowStride + planeCrop.left*pixelStride
-            }
-            if (pixelStride==1 && outputStride ==1){
+            if (pixelStride == 1 && outputStride == 1) {
                 planeBuffer.get(outputBuffer, outputOffset, rowLength)
-                outputOffset+=rowLength
-            }
-            else{
-                planeBuffer.get(rowBuffer, 0 , rowLength)
-                for (col in 0 until planeWidth){
-                    outputBuffer[outputOffset] = rowBuffer[col*pixelStride]
-                    outputOffset+= outputStride
+                outputOffset += rowLength
+            } else {
+                planeBuffer.get(rowBuffer, 0, rowLength)
+                for (col in 0 until planeWidth) {
+                    outputBuffer[outputOffset] = rowBuffer[col * pixelStride]
+                    outputOffset += outputStride
                 }
             }
         }

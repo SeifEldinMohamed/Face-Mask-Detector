@@ -12,7 +12,7 @@
         android:layout_height="match_parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btm_camera_lens_face"
+        android:id="@+id/btn_camera_lens_face"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="55dp"
